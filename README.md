@@ -138,6 +138,7 @@ git push
 ## 📞 التواصل
 
 - **GitHub:** [AbdulElahOthmanGwaith](https://github.com/AbdulElahOthmanGwaith)
+- **البريد الإلكتروني:** fcab8090@gmail.com
 - **المشروع:** [Auto-Guardian-Core](https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core)
 - **الإبلاغ عن مشاكل:** [Issues](https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core/issues)
 

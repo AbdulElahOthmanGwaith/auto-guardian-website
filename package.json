@@ -19,16 +19,27 @@
     "فحص-الكود",
     "ثغرات-أمنية"
   ],
-  "author": "Abdulelah Othman Gwaith",
+  "author": "Abdulelah Othman Gwaith <fcab8090@gmail.com>",
   "license": "MIT",
+  "maintainers": [
+    {
+      "name": "Abdulelah Othman Gwaith",
+      "email": "fcab8090@gmail.com",
+      "url": "https://github.com/AbdulElahOthmanGwaith"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core.git"
   },
   "homepage": "https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core",
   "bugs": {
-    "url": "https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core/issues"
+    "url": "https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core/issues",
+    "email": "fcab8090@gmail.com"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
 }
