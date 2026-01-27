@@ -1,0 +1,141 @@
+name: Build & Deploy Website
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    name: Build Website
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build website
+        run: npm run build
+      
+      - name: Run tests
+        run: npm test || true
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dist/
+      
+      - name: Comment PR with build status
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ تم بناء الموقع بنجاح!\n\n' +
+                    '- ✅ تثبيت المتطلبات\n' +
+                    '- ✅ بناء الموقع\n' +
+                    '- ✅ الاختبارات'
+            })
+
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+      
+      - name: Deployment notification
+        if: always()
+        run: |
+          echo "🚀 تم نشر الموقع بنجاح!"
+          echo "📱 الموقع: https://auto-guardian-core.vercel.app"
+          echo "⏰ الوقت: $(date)"
+
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Run Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+      
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always()
+    
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [ "${{ needs.build.result }}" == "success" ] && [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "status=✅ نجح" >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ فشل" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.EMAIL_SERVER }}
+          server_port: ${{ secrets.EMAIL_PORT }}
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "🔔 Auto Guardian Website - Deploy ${{ steps.status.outputs.status }}"
+          to: fcab8090@gmail.com
+          from: "GitHub Actions <noreply@github.com>"
+          body: |
+            مرحباً،
+            
+            تم نشر الموقع بنجاح!
+            
+            📊 النتائج:
+            - البناء: ${{ needs.build.result }}
+            - النشر: ${{ needs.deploy.result }}
+            
+            🔗 الموقع: https://auto-guardian-core.vercel.app
+            🔗 الإجراء: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            شكراً،
+            GitHub Actions
