@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأسعار والأسئلة الشائعة - Auto Guardian Core</title>
+    <style>
+        :root {
+            --primary: #0F172A;
+            --secondary: #3B82F6;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        body.dark-mode {
+            --bg: #0F172A;
+            --card-bg: #1E293B;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .plan-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-period {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .plan-features li.unavailable:before {
+            content: "✗";
+            color: var(--danger);
+        }
+
+        .plan-features li.unavailable {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .plan-button:hover {
+            background-color: #2563eb;
+        }
+
+        .plan-button.outline {
+            background-color: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .plan-button.outline:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+
+        .faq-question:hover {
+            background-color: var(--border);
+        }
+
+        .faq-question h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: var(--border);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background-color: var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .section-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pricing Section -->
+        <section id="pricing">
+            <div class="section-header">
+                <h1>💰 خطط التسعير</h1>
+                <p>اختر الخطة المناسبة لاحتياجاتك</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card">
+                    <div class="plan-name">🎁 مجاني</div>
+                    <p class="plan-description">مثالي للمشاريع الصغيرة</p>
+                    <div class="plan-price">$0</div>
+                    <p class="plan-period">إلى الأبد</p>
+                    <ul class="plan-features">
+                        <li>فحص أمني أساسي</li>
+                        <li>لوحة تحكم بسيطة</li>
+                        <li>تقارير نصية</li>
+                        <li class="unavailable">API محدود</li>
+                        <li class="unavailable">دعم الأولوية</li>
+                        <li class="unavailable">تكامل CI/CD</li>
+                    </ul>
+                    <button class="plan-button outline">ابدأ الآن</button>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">الأكثر شهرة</div>
+                    <div class="plan-name">⭐ احترافي</div>
+                    <p class="plan-description">للفرق والمشاريع المتوسطة</p>
+                    <div class="plan-price">$9</div>
+                    <p class="plan-period">شهرياً</p>
+                    <ul class="plan-features">
+                        <li>فحص أمني متقدم</li>
+                        <li>لوحة تحكم متقدمة</li>
+                        <li>تقارير PDF و JSON</li>
+                        <li>API كامل</li>
+                        <li>دعم البريد الإلكتروني</li>
+                        <li>تكامل CI/CD</li>
+                    </ul>
+                    <button class="plan-button">اشترك الآن</button>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="pricing-card">
+                    <div class="plan-name">🏢 مؤسسي</div>
+                    <p class="plan-description">للمؤسسات الكبرى</p>
+                    <div class="plan-price">مخصص</div>
+                    <p class="plan-period">حسب الطلب</p>
+                    <ul class="plan-features">
+                        <li>فحص أمني شامل</li>
+                        <li>لوحة تحكم مخصصة</li>
+                        <li>جميع صيغ التقارير</li>
+                        <li>API غير محدود</li>
+                        <li>دعم 24/7</li>
+                        <li>تكامل مخصص</li>
+                    </ul>
+                    <button class="plan-button outline">تواصل معنا</button>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>الميزة</th>
+                        <th>مجاني</th>
+                        <th>احترافي</th>
+                        <th>مؤسسي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>الفحص الأساسي</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>الفحص المتقدم</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>API</td>
+                        <td>محدود</td>
+                        <td>كامل</td>
+                        <td>غير محدود</td>
+                    </tr>
+                    <tr>
+                        <td>CI/CD</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>الدعم</td>
+                        <td>المجتمع</td>
+                        <td>البريد الإلكتروني</td>
+                        <td>24/7</td>
+                    </tr>
+                    <tr>
+                        <td>التخزين</td>
+                        <td>1 GB</td>
+                        <td>100 GB</td>
+                        <td>غير محدود</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" style="margin-top: 4rem;">
+            <div class="section-header">
+                <h1>❓ الأسئلة الشائعة</h1>
+                <p>إجابات على أكثر الأسئلة التي يطرحها المستخدمون</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>كيف أبدأ مع Auto Guardian؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            يمكنك البدء مباشرة بتنزيل المشروع من GitHub واتباع خطوات التثبيت. لا تحتاج إلى أي إعدادات معقدة. ما عليك سوى تشغيل الماسح الأمني على مشروعك والحصول على النتائج فوراً.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>هل يدعم جميع لغات البرمجة؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            نعم، يدعم Auto Guardian عدة لغات برمجية منها Python و JavaScript و Java و TypeScript و Go و Rust و C# و PHP. نحن نعمل على إضافة المزيد من اللغات باستمرار.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>كيف أدمج Auto Guardian مع CI/CD؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            يمكنك استخدام ملفات GitHub Actions أو GitLab CI المرفقة مع المشروع. ما عليك سوى نسخ الملفات إلى مستودعك وتفعيل الـ workflows. سيتم فحص الكود تلقائياً عند كل push.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>هل بيانات مشروعي آمنة؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            نعم، Auto Guardian مفتوح المصدر ويمكنك تشغيله محلياً على خادمك الخاص. لا نحتفظ بأي بيانات على خوادمنا. جميع الفحوصات تتم محلياً وآمنة تماماً.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>كم تكلفة استخدام Auto Guardian؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Auto Guardian مفتوح المصدر وتحت رخصة MIT، مما يعني أنه مجاني تماماً للاستخدام. لا توجد أي تكاليف مخفية. نحن نقدم أيضاً خطط احترافية ومؤسسية للميزات الإضافية.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>كيف أحصل على الدعم؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            يمكنك فتح Issue على GitHub لأي مشكلة أو سؤال. كما يمكنك التواصل معنا عبر البريد الإلكتروني fcab8090@gmail.com. نحن هنا لمساعدتك!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>هل يمكن تخصيص Auto Guardian لاحتياجاتي؟</h3>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            بالتأكيد! Auto Guardian مفتوح المصدر ويمكنك تخصيصه حسب احتياجاتك. يمكنك أيضاً التواصل معنا للحصول على خدمات تخصيص احترافية.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

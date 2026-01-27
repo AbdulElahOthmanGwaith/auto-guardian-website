@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفريق والشهادات - Auto Guardian Core</title>
+    <style>
+        :root {
+            --primary: #0F172A;
+            --secondary: #3B82F6;
+            --success: #10B981;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        body.dark-mode {
+            --bg: #0F172A;
+            --card-bg: #1E293B;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .team-avatar {
+            width: 150px;
+            height: 150px;
+            margin: 1.5rem auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .team-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .team-role {
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .team-bio {
+            color: var(--text-muted);
+            padding: 0 1rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--secondary);
+            transition: background-color 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Testimonials Section */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateX(10px);
+        }
+
+        .testimonial-stars {
+            color: #F59E0B;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .testimonial-text {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .author-info h4 {
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Stats Section -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">مستخدم نشط</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">فحص أمني</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100K+</div>
+                <div class="stat-label">ثغرة مكتشفة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4.9/5</div>
+                <div class="stat-label">تقييم المستخدمين</div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team">
+            <div class="section-header">
+                <h1>👥 فريقنا</h1>
+                <p>فريق متخصص في الأمان والبرمجة</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">👨‍💼</div>
+                    <div class="team-name">عبد الإله عثمان</div>
+                    <div class="team-role">مؤسس ومطور رئيسي</div>
+                    <div class="team-bio">خبير في الأمان السيبراني والبرمجة. لديه أكثر من 10 سنوات خبرة في تطوير الأدوات الأمنية.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">👩‍💻</div>
+                    <div class="team-name">فاطمة أحمد</div>
+                    <div class="team-role">مطورة Backend</div>
+                    <div class="team-bio">متخصصة في تطوير الخوادم والـ APIs. تساهم في تطوير محرك الفحص الأساسي.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🔬</div>
+                    <div class="team-name">محمود حسن</div>
+                    <div class="team-role">متخصص الأمان</div>
+                    <div class="team-bio">خبير في اختبار الاختراق والثغرات الأمنية. يقود فريق البحث عن الثغرات الجديدة.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">👩‍🎨</div>
+                    <div class="team-name">سارة محمود</div>
+                    <div class="team-role">مصممة واجهات المستخدم</div>
+                    <div class="team-bio">متخصصة في تصميم الواجهات الجميلة والسهلة الاستخدام. تركز على تجربة المستخدم.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">👨‍🔧</div>
+                    <div class="team-name">علي محمد</div>
+                    <div class="team-role">مهندس DevOps</div>
+                    <div class="team-bio">متخصص في البنية التحتية والنشر. يدير خوادم المشروع والتطبيقات.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">👩‍💼</div>
+                    <div class="team-name">ليلى أحمد</div>
+                    <div class="team-role">مدير المشروع</div>
+                    <div class="team-bio">تدير فريق التطوير وتنسق بين جميع الأقسام. تركز على جودة المنتج والعملاء.</div>
+                    <div class="team-social">
+                        <a href="#" class="social-link">🐙</a>
+                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" style="margin-top: 4rem;">
+            <div class="section-header">
+                <h1>⭐ آراء المستخدمين</h1>
+                <p>ماذا يقول مستخدمونا عن Auto Guardian</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "Auto Guardian غيّر طريقة عملنا في فحص الأمان. الآن نكتشف الثغرات قبل أن تصل للإنتاج!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">أ</div>
+                        <div class="author-info">
+                            <h4>أحمد محمد</h4>
+                            <p>مطور في شركة تقنية</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "الأداة سهلة الاستخدام جداً وتقدم تقارير مفصلة وواضحة. أنصح بها بشدة!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ف</div>
+                        <div class="author-info">
+                            <h4>فاطمة علي</h4>
+                            <p>مهندسة أمان سيبراني</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "التكامل مع GitHub Actions سهل جداً. الآن لدينا فحص أمني تلقائي في كل commit!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">م</div>
+                        <div class="author-info">
+                            <h4>محمود حسن</h4>
+                            <p>مدير فريق تطوير</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "أفضل أداة أمان استخدمتها. الدعم رائع والفريق متعاون جداً."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">س</div>
+                        <div class="author-info">
+                            <h4>سارة محمود</h4>
+                            <p>مطورة في شركة ناشئة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "الأداة مفتوحة المصدر وآمنة تماماً. يمكننا تشغيلها محلياً دون قلق على البيانات."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ع</div>
+                        <div class="author-info">
+                            <h4>عمر علي</h4>
+                            <p>مهندس في مؤسسة حكومية</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">
+                        "الأداة توفر الكثير من الوقت والجهد. بدلاً من ساعات من الفحص اليدوي، نحصل على النتائج في دقائق!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ل</div>
+                        <div class="author-info">
+                            <h4>ليلى أحمد</h4>
+                            <p>قائدة فريق QA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

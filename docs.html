@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التوثيق - Auto Guardian Core</title>
+    <meta name="description" content="توثيق شامل لـ Auto Guardian Core - دليل التثبيت والاستخدام والـ API">
+    <style>
+        :root {
+            --primary: #0F172A;
+            --secondary: #3B82F6;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        body.dark-mode {
+            --bg: #0F172A;
+            --card-bg: #1E293B;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .docs-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .sidebar-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-item a {
+            color: var(--secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-item a:hover,
+        .sidebar-item a.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 0.75rem;
+        }
+
+        .content h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .content h2 {
+            color: var(--primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .content h3 {
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .content ul,
+        .content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background-color: var(--border);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: var(--secondary);
+        }
+
+        pre {
+            background-color: var(--border);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+
+        .note {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .api-endpoint {
+            background-color: var(--border);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .api-method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            color: white;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .get { background-color: #3B82F6; }
+        .post { background-color: #10B981; }
+        .put { background-color: #F59E0B; }
+        .delete { background-color: #EF4444; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            text-align: right;
+        }
+
+        th {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .docs-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="docs-container">
+        <aside class="sidebar">
+            <h3>📚 التوثيق</h3>
+            <div class="sidebar-item">
+                <a href="#intro" class="doc-link active" onclick="showSection('intro')">المقدمة</a>
+            </div>
+            <div class="sidebar-item">
+                <a href="#installation" class="doc-link" onclick="showSection('installation')">التثبيت</a>
+            </div>
+            <div class="sidebar-item">
+                <a href="#usage" class="doc-link" onclick="showSection('usage')">الاستخدام</a>
+            </div>
+            <div class="sidebar-item">
+                <a href="#api" class="doc-link" onclick="showSection('api')">API</a>
+            </div>
+            <div class="sidebar-item">
+                <a href="#examples" class="doc-link" onclick="showSection('examples')">أمثلة</a>
+            </div>
+            <div class="sidebar-item">
+                <a href="#faq" class="doc-link" onclick="showSection('faq')">الأسئلة الشائعة</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <!-- المقدمة -->
+            <section id="intro" class="doc-section">
+                <h1>🛡️ مرحباً بك في Auto Guardian Core</h1>
+                <p>Auto Guardian Core هو نظام متكامل لفحص الكود البرمجي واكتشاف الثغرات الأمنية بشكل تلقائي.</p>
+                
+                <h2>المميزات الرئيسية</h2>
+                <ul>
+                    <li>🔍 فحص أمني متقدم للكود</li>
+                    <li>📊 لوحة تحكم تفاعلية</li>
+                    <li>🌐 خادم REST API كامل</li>
+                    <li>🔄 تكامل CI/CD</li>
+                    <li>📈 مراقبة Prometheus</li>
+                    <li>🔔 نظام إشعارات متقدم</li>
+                </ul>
+
+                <div class="note">
+                    <strong>💡 ملاحظة:</strong> هذا التوثيق يغطي الإصدار 2.0.0 من Auto Guardian Core.
+                </div>
+            </section>
+
+            <!-- التثبيت -->
+            <section id="installation" class="doc-section" style="display: none;">
+                <h1>📦 التثبيت</h1>
+
+                <h2>المتطلبات</h2>
+                <ul>
+                    <li>Python 3.9 أو أحدث</li>
+                    <li>Docker و Docker Compose (اختياري)</li>
+                    <li>Git</li>
+                </ul>
+
+                <h2>التثبيت المحلي</h2>
+                <pre><code># استنساخ المستودع
+git clone https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core.git
+cd Auto-Guardian-Core
+
+# تثبيت المتطلبات
+pip install -r requirements.txt
+
+# تشغيل لوحة التحكم
+python -m http.server 8000</code></pre>
+
+                <h2>التثبيت عبر Docker</h2>
+                <pre><code># التشغيل الأساسي
+docker-compose up -d
+
+# التشغيل الكامل (جميع الخدمات)
+docker-compose -f docker-compose.production.yml up -d
+
+# عرض الخدمات
+docker-compose ps</code></pre>
+
+                <div class="success">
+                    <strong>✅ تم التثبيت بنجاح!</strong> الآن يمكنك الوصول إلى لوحة التحكم على http://localhost:8000
+                </div>
+            </section>
+
+            <!-- الاستخدام -->
+            <section id="usage" class="doc-section" style="display: none;">
+                <h1>🚀 الاستخدام</h1>
+
+                <h2>الماسح الأمني</h2>
+                <pre><code># فحص مجلد محدد
+python scripts/enhanced_security_scanner.py /path/to/project
+
+# تحديد مستوى الخطورة
+python scripts/enhanced_security_scanner.py . --severity high
+
+# حفظ النتائج
+python scripts/enhanced_security_scanner.py . -o results.json
+
+# إنشاء تقرير Markdown
+python scripts/enhanced_security_scanner.py . -r report.md</code></pre>
+
+                <h2>خادم API</h2>
+                <pre><code># تشغيل الخادم
+python scripts/api_server.py
+
+# الخادم على منفذ محدد
+python scripts/api_server.py 8080
+
+# الوصول للـ API
+curl http://localhost:8000/api/health
+curl http://localhost:8000/api/scan?target=.&severity=medium
+curl http://localhost:8000/api/statistics</code></pre>
+
+                <h2>تكامل CI/CD</h2>
+                <pre><code># فحص في CI/CD
+python scripts/cicd_integrator.py .
+
+# مع خيارات محددة
+python scripts/cicd_integrator.py . --severity high --fail-critical
+
+# إنشاء ملف GitHub Actions
+python scripts/cicd_integrator.py --github-workflow</code></pre>
+            </section>
+
+            <!-- API -->
+            <section id="api" class="doc-section" style="display: none;">
+                <h1>🔌 REST API</h1>
+
+                <h2>نقاط الوصول</h2>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/health</code>
+                    <p>التحقق من حالة الخادم</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method post">POST</span>
+                    <code>/api/scan</code>
+                    <p>بدء فحص أمني جديد</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/results</code>
+                    <p>الحصول على نتائج الفحص</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/statistics</code>
+                    <p>الحصول على الإحصائيات</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/vulnerabilities</code>
+                    <p>قائمة الثغرات المكتشفة</p>
+                </div>
+
+                <h2>مثال على الطلب</h2>
+                <pre><code>curl -X POST http://localhost:8000/api/scan \\
+  -H "Content-Type: application/json" \\
+  -d '{\n    "target": ".",\n    "severity": "high",\n    "languages": ["python", "javascript"]\n  }'</code></pre>
+
+                <h2>مثال على الاستجابة</h2>
+                <pre><code>{\n  "status": "success",\n  "scan_id": "scan_123",\n  "vulnerabilities": [\n    {\n      "type": "SQL Injection",\n      "severity": "high",\n      "file": "app.py",\n      "line": 42\n    }\n  ]\n}</code></pre>
+            </section>
+
+            <!-- أمثلة -->
+            <section id="examples" class="doc-section" style="display: none;">
+                <h1>💡 أمثلة عملية</h1>
+
+                <h2>مثال 1: فحص مشروع Python</h2>
+                <pre><code>python scripts/enhanced_security_scanner.py ./my_project --severity medium</code></pre>
+
+                <h2>مثال 2: استخدام الـ API</h2>
+                <pre><code>import requests
+
+response = requests.post('http://localhost:8000/api/scan', json={
+    'target': '.',
+    'severity': 'high'
+})
+
+print(response.json())</code></pre>
+
+                <h2>مثال 3: GitHub Actions</h2>
+                <pre><code>name: Security Scan
+on: [push]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Auto Guardian
+        run: python scripts/enhanced_security_scanner.py .</code></pre>
+            </section>
+
+            <!-- الأسئلة الشائعة -->
+            <section id="faq" class="doc-section" style="display: none;">
+                <h1>❓ الأسئلة الشائعة</h1>
+
+                <h3>س: كيف أبدأ مع Auto Guardian؟</h3>
+                <p>ج: اتبع خطوات التثبيت أعلاه ثم استخدم الماسح الأمني لفحص مشروعك.</p>
+
+                <h3>س: هل يدعم لغات برمجية أخرى؟</h3>
+                <p>ج: نعم، يدعم Python و JavaScript و Java و TypeScript و Go و Rust و C# و PHP.</p>
+
+                <h3>س: كيف أدمج Auto Guardian في CI/CD؟</h3>
+                <p>ج: استخدم ملفات GitHub Actions أو GitLab CI المرفقة مع المشروع.</p>
+
+                <h3>س: هل يمكن استخدام Auto Guardian مجاناً؟</h3>
+                <p>ج: نعم، المشروع مفتوح المصدر وتحت رخصة MIT.</p>
+
+                <h3>س: كيف أحصل على الدعم؟</h3>
+                <p>ج: يمكنك فتح Issue على GitHub أو التواصل معنا عبر البريد الإلكتروني.</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.doc-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // إزالة active من جميع الروابط
+            document.querySelectorAll('.doc-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // عرض القسم المختار
+            document.getElementById(sectionId).style.display = 'block';
+
+            // إضافة active للرابط المختار
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
