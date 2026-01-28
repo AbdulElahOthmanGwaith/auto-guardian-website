@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "7860:7860"
+    environment:
+      - PORT=7860
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    container_name: auto-guardian-website
+    volumes:
+      - .:/app
+    networks:
+      - auto-guardian-network
+
+networks:
+  auto-guardian-network:
+    driver: bridge
