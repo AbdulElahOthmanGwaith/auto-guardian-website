@@ -1,8 +1,8 @@
 {
   "name": "auto-guardian-website",
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": ".",
   "public": true,
   "env": {
     "NODE_ENV": "production"
@@ -30,10 +30,26 @@
       ]
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/docs",
+      "destination": "/docs.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing-faq.html"
+    },
+    {
+      "source": "/team",
+      "destination": "/team-testimonials.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact-form.html"
     }
   ]
 }
