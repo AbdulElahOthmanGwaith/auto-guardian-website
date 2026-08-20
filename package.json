@@ -37,8 +37,9 @@
     "url": "https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core/issues",
     "email": "fcab8090@gmail.com"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "vite": "5.4.19"
+  },
   "engines": {
     "node": ">=14.0.0"
   }
