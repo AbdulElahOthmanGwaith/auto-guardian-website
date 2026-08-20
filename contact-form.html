@@ -150,7 +150,7 @@
             <p>نحن هنا للإجابة على أسئلتك والاستماع لاقتراحاتك</p>
         </div>
 
-        <form id="contact-form">
+        <form id="contact-form" data-endpoint="" data-fallback-email="fcab8090@gmail.com">
             <div class="form-group">
                 <label for="name">الاسم <span class="required">*</span></label>
                 <input 
@@ -194,52 +194,63 @@
                 ></textarea>
             </div>
 
-            <button type="submit">إرسال الرسالة</button>
+            <button type="submit" id="submit-button">إرسال الرسالة</button>
+            <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
         </form>
     </div>
 
     <script>
-        // نموذج الاتصال البسيط
-        document.getElementById('contact-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        const form = document.getElementById('contact-form');
+        const submitButton = document.getElementById('submit-button');
+        const status = document.getElementById('form-status');
 
-            const formData = new FormData(e.target);
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
             const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message'),
+                name: String(formData.get('name') || '').trim(),
+                email: String(formData.get('email') || '').trim(),
+                subject: String(formData.get('subject') || '').trim(),
+                message: String(formData.get('message') || '').trim(),
                 timestamp: new Date().toISOString()
             };
+            const endpoint = (form.dataset.endpoint || '').trim();
+            const fallbackEmail = (form.dataset.fallbackEmail || 'fcab8090@gmail.com').trim();
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'جارٍ التجهيز…';
+            form.setAttribute('aria-busy', 'true');
+            status.textContent = '';
 
             try {
-                // استخدم Formspree أو Basin
-                const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+                if (!endpoint || endpoint.includes('YOUR_FORM_ID')) {
+                    const mailto = `mailto:${fallbackEmail}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+                        `الاسم: ${data.name}\nالبريد: ${data.email}\n\n${data.message}`
+                    )}`;
+                    window.location.href = mailto;
+                    status.textContent = 'لم تتم تهيئة خدمة الإرسال بعد؛ فُتح تطبيق البريد لإكمال الرسالة يدوياً.';
+                    return;
+                }
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
+                if (!response.ok) throw new Error(`Request failed: ${response.status}`);
 
-                if (response.ok) {
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'form-message form-message-success';
-                    successMsg.textContent = '✅ تم إرسال الرسالة بنجاح! شكراً لتواصلك معنا.';
-                    e.target.appendChild(successMsg);
-                    e.target.reset();
-
-                    setTimeout(() => successMsg.remove(), 5000);
-                } else {
-                    throw new Error('Failed to send');
-                }
+                status.textContent = 'تم إرسال الرسالة بنجاح. شكراً لتواصلك معنا.';
+                form.reset();
             } catch (error) {
-                const errorMsg = document.createElement('div');
-                errorMsg.className = 'form-message form-message-error';
-                errorMsg.textContent = '❌ حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.';
-                e.target.appendChild(errorMsg);
-
-                setTimeout(() => errorMsg.remove(), 5000);
+                console.error('Contact form submission failed:', error);
+                status.textContent = 'تعذر الإرسال عبر الخادم. تحقق من الاتصال أو أرسل الرسالة عبر البريد الإلكتروني مباشرة.';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'إرسال الرسالة';
+                form.setAttribute('aria-busy', 'false');
             }
         });
     </script>

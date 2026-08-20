@@ -149,40 +149,59 @@ class ContactFormManager {
 
         const formData = new FormData(this.form);
         const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            subject: formData.get('subject'),
-            message: formData.get('message'),
+            name: String(formData.get('name') || '').trim(),
+            email: String(formData.get('email') || '').trim(),
+            subject: String(formData.get('subject') || '').trim(),
+            message: String(formData.get('message') || '').trim(),
             timestamp: new Date().toISOString()
         };
+        const endpoint = (this.form.dataset.endpoint || '').trim();
+        const fallbackEmail = (this.form.dataset.fallbackEmail || 'fcab8090@gmail.com').trim();
+        const submitButton = this.form.querySelector('button[type="submit"]');
 
+        this.setBusy(true, submitButton);
         try {
-            // إرسال البيانات إلى Formspree أو Basin
-            const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+            if (!endpoint || endpoint.includes('YOUR_FORM_ID')) {
+                const mailto = `mailto:${fallbackEmail}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+                    `الاسم: ${data.name}\nالبريد: ${data.email}\n\n${data.message}`
+                )}`;
+                window.location.href = mailto;
+                this.showInfo('لم يتم تهيئة خدمة الإرسال بعد؛ فُتح تطبيق البريد لإكمال الرسالة يدوياً.');
+                return;
+            }
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             });
 
-            if (response.ok) {
-                this.showSuccess('تم إرسال الرسالة بنجاح! شكراً لتواصلك معنا.');
-                this.form.reset();
+            if (!response.ok) throw new Error(`Contact form request failed: ${response.status}`);
 
-                // تتبع الحدث
-                if (window.analytics) {
-                    window.analytics.trackEvent('form_submit', {
-                        form_name: 'contact_form',
-                        status: 'success'
-                    });
-                }
-            } else {
-                this.showError('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقاً.');
+            this.showSuccess('تم إرسال الرسالة بنجاح! شكراً لتواصلك معنا.');
+            this.form.reset();
+            if (window.analytics) {
+                window.analytics.trackEvent('form_submit', {
+                    form_name: 'contact_form',
+                    status: 'success'
+                });
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            this.showError('حدث خطأ في الاتصال. يرجى المحاولة لاحقاً.');
+            this.showError('تعذر إرسال الرسالة عبر الخادم. تحقق من الاتصال أو استخدم البريد الإلكتروني مباشرة.');
+        } finally {
+            this.setBusy(false, submitButton);
+        }
+    }
+
+    setBusy(isBusy, submitButton) {
+        this.form.setAttribute('aria-busy', String(isBusy));
+        if (submitButton) {
+            submitButton.disabled = isBusy;
+            submitButton.setAttribute('aria-disabled', String(isBusy));
         }
     }
 
@@ -194,17 +213,23 @@ class ContactFormManager {
         this.showMessage(message, 'error');
     }
 
+    showInfo(message) {
+        this.showMessage(message, 'info');
+    }
+
     showMessage(message, type) {
+        this.form.querySelectorAll('.form-message').forEach((node) => node.remove());
         const messageDiv = document.createElement('div');
         messageDiv.className = `form-message form-message-${type}`;
+        messageDiv.setAttribute('role', type === 'error' ? 'alert' : 'status');
         messageDiv.textContent = message;
         messageDiv.style.cssText = `
             padding: 1rem;
             margin: 1rem 0;
             border-radius: 0.5rem;
-            background-color: ${type === 'success' ? '#d4edda' : '#f8d7da'};
-            color: ${type === 'success' ? '#155724' : '#721c24'};
-            border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
+            background-color: ${type === 'success' ? '#d4edda' : type === 'info' ? '#dbeafe' : '#f8d7da'};
+            color: ${type === 'success' ? '#155724' : type === 'info' ? '#1e3a8a' : '#721c24'};
+            border: 1px solid ${type === 'success' ? '#c3e6cb' : type === 'info' ? '#93c5fd' : '#f5c6cb'};
         `;
 
         this.form.appendChild(messageDiv);
