@@ -30,7 +30,7 @@
 ```bash
 # استنساخ المستودع
 git clone https://github.com/AbdulElahOthmanGwaith/Auto-Guardian-Core.git
-cd auto-guardian-website
+cd Auto-Guardian-Core
 
 # تثبيت المتطلبات
 npm install
@@ -144,7 +144,7 @@ git push
 
 ## 📄 الرخصة
 
-هذا المشروع مرخص تحت رخصة **MIT**. راجع ملف [LICENSE](../LICENSE) للتفاصيل.
+هذا المشروع مرخص تحت رخصة **MIT**. راجع ملف [LICENSE](LICENSE) للتفاصيل.
 
 ## 🙏 شكر خاص
 
@@ -152,6 +152,6 @@ git push
 
 ---
 
-**آخر تحديث:** 27 يناير 2026  
+**آخر تحديث:** 20 أغسطس 2026
 **الإصدار:** 2.0.0  
 **الحالة:** ✅ نشر دائم
