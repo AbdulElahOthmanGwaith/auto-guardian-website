@@ -14,6 +14,8 @@ const checks = [
   ['contact form exposes a live status region', files.contact.includes('id="form-status"') && files.contact.includes('aria-live="polite"')],
   ['contact form has a configured fallback email', /data-fallback-email="[^"]+@[^\"]+"/.test(files.contact)],
   ['main script uses the configured endpoint', files.script.includes('fetch(endpoint')],
+  ['analytics rejects placeholder tracking ids', files.script.includes("this.trackingId.includes('YOUR_')")],
+  ['analytics keeps a usable gtag reference', files.script.includes('this.gtag = window.gtag')],
   ['main script has a mail fallback', files.script.includes('window.location.href = mailto')],
   ['contact flow prevents duplicate submissions', files.contact.includes('submitButton.disabled = true') || files.script.includes('submitButton.disabled = true')],
   ['no fake Formspree request remains', !files.contact.includes('fetch(\'https://formspree.io/f/YOUR_FORM_ID\'') && !files.script.includes('fetch(\'https://formspree.io/f/YOUR_FORM_ID\'')],

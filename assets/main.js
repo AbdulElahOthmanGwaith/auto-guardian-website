@@ -66,11 +66,13 @@ class DarkModeManager {
 class AnalyticsManager {
     constructor(trackingId) {
         this.trackingId = trackingId;
+        this.gtag = null;
         this.init();
     }
 
     init() {
-        if (!this.trackingId) return;
+        // لا ترسل طلبات تحليل بمعرّف placeholder أو إعداد غير مكتمل.
+        if (!this.trackingId || this.trackingId.includes('YOUR_')) return;
 
         // إضافة Google Analytics
         const script = document.createElement('script');
@@ -79,11 +81,12 @@ class AnalyticsManager {
         document.head.appendChild(script);
 
         window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', this.trackingId);
+        window.gtag = window.gtag || function gtag(...args) {
+            window.dataLayer.push(args);
+        };
+        this.gtag = window.gtag;
+        this.gtag('js', new Date());
+        this.gtag('config', this.trackingId);
 
         // تتبع الأحداث
         this.trackPageView();
@@ -93,8 +96,8 @@ class AnalyticsManager {
 
     trackPageView() {
         // تتبع صفحة جديدة
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'page_view', {
+        if (this.gtag) {
+            this.gtag('event', 'page_view', {
                 page_title: document.title,
                 page_path: window.location.pathname
             });
@@ -102,8 +105,8 @@ class AnalyticsManager {
     }
 
     trackEvent(eventName, eventData = {}) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', eventName, eventData);
+        if (this.gtag) {
+            this.gtag('event', eventName, eventData);
         }
     }
 
@@ -294,7 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.darkMode = new DarkModeManager();
 
     // تهيئة Analytics (استبدل YOUR_TRACKING_ID بـ Google Analytics ID)
-    window.analytics = new AnalyticsManager('G-YOUR_TRACKING_ID');
+    // ضع معرّفًا حقيقيًا هنا عند تفعيل التحليلات؛ القيمة الفارغة تمنع الطلبات الوهمية.
+    window.analytics = new AnalyticsManager('');
 
     // تهيئة نموذج الاتصال
     window.contactForm = new ContactFormManager('contact-form');
