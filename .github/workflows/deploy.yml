@@ -37,7 +37,7 @@ jobs:
         run: npm test --if-present
       
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build
           path: dist/
@@ -99,7 +99,7 @@ jobs:
           temporaryPublicStorage: true
       
       - name: Upload Lighthouse results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-report
           path: .lighthouseci/
