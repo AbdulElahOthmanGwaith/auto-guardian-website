@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Run Lighthouse audit
-        uses: treosh/lighthouse-ci-action@v9
+        uses: treosh/lighthouse-ci-action@v12
         with:
           uploadArtifacts: true
           temporaryPublicStorage: true
