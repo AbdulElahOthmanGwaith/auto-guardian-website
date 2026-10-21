@@ -39,7 +39,7 @@
     "email": "fcab8090@gmail.com"
   },
   "devDependencies": {
-    "vite": "^8.2.2"
+    "vite": "^8.2.4"
   },
   "engines": {
     "node": ">=14.0.0"
